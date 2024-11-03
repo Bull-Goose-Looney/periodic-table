@@ -14,7 +14,7 @@ void menu() {
     cout << "Option 1: Search element by name.\n";
     cout << "Option 2: Search Element by Symbol.\n";
     cout << "Option 3: Search Element by atomic number\n";
-    cout << "Enter your selection as 1, 2, 3, or 4.\n";
+    cout << "Enter your selection as 1, 2, 3, or 4 to QUIT\n";
 }
 
 
@@ -73,28 +73,55 @@ int main() {
     while (x == 1) {
 
         int selection = -1;
+        char repeat;
 
         menu();
-        
+
         cin >> selection 
         if (selection == 1) {
-            //do option 1
+            string name;
+            cout << "Enter the Element Name: "
+            getline (cin, name);
+            cout << "You entered " << name << "using quantum hydrolysis to compute element data"
+            findElementFromName(name);
         }
         else if (selection == 2) {
+            string symbol;
+            cout << "Enter the Element Symbol: "
+            getline (cin, symbol);
             //do option 2
         }
         else if (selection == 3) {
+            int atomNum;
+            cout << "Enter the Element Symbol: "
+            getline (cin, atomNum);
             //do option 3
         }
         else if (selection == 4) {
-            //do option 4
+            cout << "Thanks for using this periodic table, see you next time!\n\n";
+            break;  
+        }
+        else {
+            cout << "Please enter a valid input per menu instructions. (1, 2, 3, or 4)\n"
+            continue;
+        }
+        
+        cout << "Would you like to search another element? (Y/y or N/n to QUIT)\n";
+        cin >> repeat;
+
+        if (tolower(repeat) == 'y') {
+            continue;
+        }
+        else if (tolower(repeat) == 'n') {
+            cout << "Thanks for using this periodic table, see you next time!\n\n";
+            break;
         }
 
     }
 
 
-    Element user_element = findElementFromName("Helium");
-    cout << "The symbol of that element is " << user_element.getSymbol() << endl;
+    //Element user_element = findElementFromName("Helium");
+    //cout << "The symbol of that element is " << user_element.getSymbol() << endl;
 
     return 0;
 }
