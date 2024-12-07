@@ -31,7 +31,7 @@ void namePrompt() {
 
     cout << "The symbol for " << element.getName() << " is: " << element.getSymbol()<< endl; 
     cout << "The atomic mass of " << element.getName() << " is: " << element.getMass() << " g/mol\n";
-    cout << element.getName() << " is in group " << element.getGroup()  << " which means it is a(n) " << element.getType() << endl   
+    cout << element.getName() << " is in group " << element.getGroup()  << " which means it is a(n) " << element.getType() << endl;   
 }
 
 void symbolPrompt() {
@@ -43,12 +43,12 @@ void symbolPrompt() {
 
     Element element = findElementFromSymbol(symbol);
     if (element == NULL) {
-        cout << "Element not found. Please check for spelling and/or scientific validity and try again."
+        cout << "Element not found. Please check for spelling and/or scientific validity and try again.";
     }
 
     cout << "The name of " << element.getSymbol() << " is: " << element.getName()<< endl; 
     cout << "The atomic mass of " << element.getName() << " is: " << element.getMass() << " g/mol\n";
-    cout << element.getName() << " is in group " << element.getGroup()  << " which means it is a(n) " << element.getType() << endl   
+    cout << element.getName() << " is in group " << element.getGroup()  << " which means it is a(n) " << element.getType() << endl;   
 }
 
 void atomNumPrompt() {
@@ -60,13 +60,13 @@ void atomNumPrompt() {
 
     Element element = findElementFromAtomicNum(atomNum);
     if (element == NULL) {
-        cout << "Element not found. Please check for spelling and/or scientific validity and try again."
+        cout << "Element not found. Please check for spelling and/or scientific validity and try again.";
     }
 
     cout << "The name of this element is " << element.getName() << ".";
     cout << "The symbol for " << element.getName() << " is: " << element.getSymbol() << endl; 
     cout << "The atomic mass of " << element.getName() << " is: " << element.getMass() << " g/mol\n";
-    cout << element.getName() << " is in group " << element.getGroup()  << " which means it is a(n) " << element.getType() << endl   
+    cout << element.getName() << " is in group " << element.getGroup()  << " which means it is a(n) " << element.getType() << endl;   
 }
 
 // This function will, when given a filename, open the file, read it, and populate a list of Elements.
@@ -179,20 +179,20 @@ int main() {
 
         menu();
 
-        cin >> selection 
+        cin >> selection; 
         if (selection == 1) {
             namePrompt();
         }
         else if (selection == 2) {
             string symbol;
-            cout << "Enter the Element Symbol: "
+            cout << "Enter the Element Symbol: ";
             getline (cin, symbol);
             //do option 2
         }
         else if (selection == 3) {
             int atomNum;
-            cout << "Enter the Element Symbol: "
-            getline (cin, atomNum);
+            cout << "Enter the Element Symbol: ";
+            cin >> atomNum;
             //do option 3
         }
         else if (selection == 4) {
@@ -200,7 +200,7 @@ int main() {
             break;  
         }
         else {
-            cout << "Please enter a valid input per menu instructions. (1, 2, 3, or 4)\n"
+            cout << "Please enter a valid input per menu instructions. (1, 2, 3, or 4)\n";
             continue;
         }
         

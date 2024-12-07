@@ -54,7 +54,7 @@ void Element :: setAtomicNum(int ourAtomicNum) {
     atomicNum = ourAtomicNum;
 }
 void Element :: setGroup(int ourGroup) {
-    group = ourGroup
+    group = ourGroup;
 }
 void Element :: setMass(double ourMass) {
     mass = ourMass;
