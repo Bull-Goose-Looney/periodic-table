@@ -8,7 +8,7 @@ using namespace std;
 
 class Element {
 	public:
-		Element :: Element(string& name, string& symbol, string& type, int atomicNum, int group, double mass, Phase phase);
+		Element(string& name, string& symbol, string& type, int atomicNum, int group, double mass, Phase phase);
 		Element() = default;
 		
 	    string getName();

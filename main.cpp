@@ -3,11 +3,39 @@
 #include <sstream>
 #include <vector>
 
-#include "Element.cpp";
+#include "Element.cpp"
 
 using namespace std;
 
 vector<Element> all_the_elements;
+
+Element* findElementFromName(string name) {
+    cout << "Made it here";
+    for(Element element : all_the_elements) {
+        if (element.getName() == name) {
+            return &element;
+        }
+    }
+    return nullptr;
+}
+
+Element* findElementFromSymbol(string symbol) {
+    for(Element element : all_the_elements) {
+        if (element.getSymbol() == symbol) {
+            return &element;
+        }
+    }
+    return nullptr;
+}
+
+Element* findElementFromAtomicNum(int atomicNum) {
+    for(Element element : all_the_elements) {
+        if (element.getAtomicNum() == atomicNum) {
+            return &element;
+        }
+    }
+    return nullptr;
+}
 
 void menu() {
     cout << "Please select one of the following\n\n";
@@ -18,56 +46,10 @@ void menu() {
 }
 
 void namePrompt() {
-    string name;
-    cout << "Enter the Element Name: ";
-
-    getline (cin, name);
-    cout << "You entered " << name << "Now using quantum hydrolysis to compute element data\n\n";
-
-    Element element = findElementFromName(name);
-    if (element == NULL) {
-        cout << "Element not found. Please check for spelling and/or scientific validity and try again.";
-    }
-
-    cout << "The symbol for " << element.getName() << " is: " << element.getSymbol()<< endl; 
-    cout << "The atomic mass of " << element.getName() << " is: " << element.getMass() << " g/mol\n";
-    cout << element.getName() << " is in group " << element.getGroup()  << " which means it is a(n) " << element.getType() << endl;   
+      
 }
 
-void symbolPrompt() {
-    string symbol;
-    cout << "Enter the Element Symbol: ";
 
-    getline (cin, symbol);
-    cout << "You entered " << symbol << "Now using quantum hydrolysis to compute element data\n\n";
-
-    Element element = findElementFromSymbol(symbol);
-    if (element == NULL) {
-        cout << "Element not found. Please check for spelling and/or scientific validity and try again.";
-    }
-
-    cout << "The name of " << element.getSymbol() << " is: " << element.getName()<< endl; 
-    cout << "The atomic mass of " << element.getName() << " is: " << element.getMass() << " g/mol\n";
-    cout << element.getName() << " is in group " << element.getGroup()  << " which means it is a(n) " << element.getType() << endl;   
-}
-
-void atomNumPrompt() {
-    int atomNum;
-    cout << "Enter the Element's atomic number: ";
-
-    cin >> atomNum;
-    cout << "You entered " << atomNum << "Now using quantum hydrolysis to compute element data\n\n";
-
-    Element element = findElementFromAtomicNum(atomNum);
-    if (element == NULL) {
-        cout << "Element not found. Please check for spelling and/or scientific validity and try again.";
-    }
-
-    cout << "The name of this element is " << element.getName() << ".";
-    cout << "The symbol for " << element.getName() << " is: " << element.getSymbol() << endl; 
-    cout << "The atomic mass of " << element.getName() << " is: " << element.getMass() << " g/mol\n";
-    cout << element.getName() << " is in group " << element.getGroup()  << " which means it is a(n) " << element.getType() << endl;   
-}
 
 // This function will, when given a filename, open the file, read it, and populate a list of Elements.
 // Input: filename
@@ -138,41 +120,18 @@ void readCSV(const string& filename) {
         }
 }
 
-Element findElementFromName(string name) {
-    for(Element element : all_the_elements) {
-        if (element.getName() == name) {
-            return element;
-        }
-    }
-    return NULL;
-}
 
-Element findElementFromSymbol(string symbol) {
-    for(Element element : all_the_elements) {
-        if (element.getSymbol() == symbol) {
-            return element;
-        }
-    }
-}
-
-Element findElementFromAtomicNum(int atomicNum) {
-    for(Element element : all_the_elements) {
-        if (element.getAtomicNum() == atomicNum) {
-            return element;
-        }
-    }
-}
 
 
 // Main will start the program, we will pass the proper filename 'elementdatavalues.csv'
 int main() {
-    string filename = "elementdatavalues.csv";
+    string filename = "elements.csv";
     readCSV(filename);
 
     cout << "Welcome to the C++ Periodic Table 5000, brought to you by C programing and Dmitri Mendeleev: a GMoney production\n\n";
 
-    int x = 1;
-    while (x == 1) {
+    bool running = true;
+    while (running) {
 
         int selection = -1;
         char repeat;
@@ -181,7 +140,22 @@ int main() {
 
         cin >> selection; 
         if (selection == 1) {
-            namePrompt();
+            string name;
+            cout << "Enter the Element Name: ";
+
+            cin.ignore();
+            cin.clear();
+            getline (cin, name);
+            cout << "You entered " << name << ", Now using quantum hydrolysis to compute element data\n\n";
+
+            Element* element = findElementFromName(name);
+            if (element == nullptr) {
+                cout << "Element not found. Please check for spelling and/or scientific validity and try again.";
+            }
+
+            cout << "The symbol for " << element->getName() << " is: " << element->getSymbol()<< endl; 
+            cout << "The atomic mass of " << element->getName() << " is: " << element->getMass() << " g/mol\n";
+            cout << element->getName() << " is in group " << element->getGroup()  << " which means it is a(n) " << element->getType() << endl;
         }
         else if (selection == 2) {
             string symbol;
@@ -196,8 +170,7 @@ int main() {
             //do option 3
         }
         else if (selection == 4) {
-            cout << "Thanks for using this periodic table, see you next time!\n\n";
-            break;  
+            running = false;  
         }
         else {
             cout << "Please enter a valid input per menu instructions. (1, 2, 3, or 4)\n";
@@ -210,12 +183,12 @@ int main() {
         if (tolower(repeat) == 'y') {
             continue;
         }
-        else if (tolower(repeat) == 'n') {
-            cout << "Thanks for using this periodic table, see you next time!\n\n";
-            break;
+        else if (tolower(repeat) == 'n') { 
+            running = false;
         }
 
     }
+    cout << "Thanks for using this periodic table, see you next time!\n\n";
 
 
     //Element user_element = findElementFromName("Helium");

@@ -1,6 +1,6 @@
 // Phase.h
-#ifndef STATUS_H
-#define STATUS_H
+#ifndef PHASE_H
+#define PHASE_H
 
 // Define an enum for phase
 enum class Phase {
