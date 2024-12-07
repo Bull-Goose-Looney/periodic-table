@@ -7,7 +7,6 @@ enum class Phase {
     Solid,
     Liquid,
     Gas,
-    Plasma,
     Unknown
 };
 
