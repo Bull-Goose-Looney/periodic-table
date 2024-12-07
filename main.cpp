@@ -10,6 +10,13 @@ using namespace std;
 
 vector<Element> all_the_elements;
 
+void printElementDetails(Element* element) {
+     cout << "The Element you selected is " << element->getName() << "." << endl;
+     cout << "The symbol for " << element->getName() << " is: " << element->getSymbol()<< endl; 
+     cout << "The atomic mass of " << element->getName() << " is: " << element->getMass() << " g/mol\n";
+     cout << "The atomic number for " << element->getName() << " is: " << element->getAtomicNum() << endl;
+}
+
 Element* findElementFromName(string name) {
     cout << "Size of elements vector" << all_the_elements.size() << endl;
     for(Element& element : all_the_elements) {
@@ -22,7 +29,7 @@ Element* findElementFromName(string name) {
 }
 
 Element* findElementFromSymbol(string symbol) {
-    for(Element element : all_the_elements) {
+    for(Element& element : all_the_elements) {
         if (element.getSymbol() == symbol) {
             return &element;
         }
@@ -31,7 +38,7 @@ Element* findElementFromSymbol(string symbol) {
 }
 
 Element* findElementFromAtomicNum(int atomicNum) {
-    for(Element element : all_the_elements) {
+    for(Element& element : all_the_elements) {
         if (element.getAtomicNum() == atomicNum) {
             return &element;
         }
@@ -43,19 +50,15 @@ void menu() {
     cout << "Please select one of the following\n\n";
     cout << "Option 1: Search element by name.\n";
     cout << "Option 2: Search Element by Symbol.\n";
-    cout << "Option 3: Search Element by atomic number\n";
-    cout << "Enter your selection as 1, 2, 3, or 4 to QUIT\n";
+    cout << "Option 3: Search Element by atomic number\n\n";
+    cout << "Enter your selection as 1, 2, 3, or 4 to QUIT: ";
 }
-
 
 string removeQuotes(const std::string& str) {
     static regex quoteRegex("^\"|\"$"); // Matches leading or trailing quotes
     return regex_replace(str, quoteRegex, "");
 }
-// This function will, when given a filename, open the file, read it, and populate a list of Elements.
-// Input: filename
-// Output: void
-// Action: set's our global Element list.
+
 void readCSV(const string& filename) {
     vector<Element> elements;
     vector<string> headers;
@@ -71,7 +74,6 @@ void readCSV(const string& filename) {
     if (getline(file, line)) {
         istringstream headerStream(line);
         string header;
-        int i = 1;
         while (getline(headerStream, header, ',')) {
             headers.push_back(removeQuotes(header));
         }
@@ -97,7 +99,6 @@ void readCSV(const string& filename) {
 
             if (headers[i] == "Name")
             {
-                cout << "Setting element name = " << row[i] << endl;
                 element.setName(row[i]);
             }
             else if (headers[i] == "Symbol")
@@ -149,7 +150,7 @@ int main() {
 
     readCSV(filename);
 
-    cout << "Welcome to the C++ Periodic Table 5000, brought to you by C programing and Dmitri Mendeleev: a GMoney production\n\n";
+    cout << endl << "Welcome to the C++ Periodic Table 5000, brought to you by C programing and Dmitri Mendeleev: a GMoney production\n\n";
 
     bool running = true;
     while (running) {
@@ -171,34 +172,69 @@ int main() {
 
             Element *element = findElementFromName(name);
             if (element == nullptr) {
-                cout << "Element not found. Please check for spelling and/or scientific validity and try again.";
+                cout << endl << "Element not found. Please check for spelling and/or scientific validity and try again." << endl << endl;
+                continue;
             } else {
-                cout << "The symbol for " << element->getName() << " is: " << element->getSymbol()<< endl; 
-                cout << "The atomic mass of " << element->getName() << " is: " << element->getMass() << " g/mol\n";
-                // cout << element->getName() << " is in group " << element->getGroup()  << " which means it is a(n) " << element->getType() << endl;
+                printElementDetails(element);
             }
         }
         else if (selection == 2) {
             string symbol;
             cout << "Enter the Element Symbol: ";
+
+            cin.ignore();
+            cin.clear();
             getline (cin, symbol);
-            //do option 2
+            cout << "You entered " << symbol << ", Now using quantum hydrolysis to compute element data\n\n";
+
+            Element *element = findElementFromSymbol(symbol);
+            if (element == nullptr) {
+                cout << endl << "Element not found. Please check for spelling and/or scientific validity and try again." << endl << endl;
+                continue;
+            } else {
+                printElementDetails(element);
+            }
         }
         else if (selection == 3) {
             int atomNum;
-            cout << "Enter the Element Symbol: ";
+            cout << "Enter the Atomic Number: ";
+
+            cin.ignore();
+            cin.clear();
             cin >> atomNum;
-            //do option 3
+            cout << "You entered " << atomNum << ", Now using quantum hydrolysis to compute element data\n\n";
+
+            Element *element = findElementFromAtomicNum(atomNum);
+            if (element == nullptr) {
+                cout << endl << "Element not found. Please check for spelling and/or scientific validity and try again." << endl << endl;
+                continue;
+            } else {
+                printElementDetails(element);
+            }
         }
         else if (selection == 4) {
-            running = false;  
+            char option;
+            cout << endl << "Are you sure you would like to quit? (Y/y or N/n to QUIT): ";
+            cin.clear();
+            cin.ignore();
+            cin >> option;
+            if ((option == 'y') || (option == 'Y')) {
+            cout << endl << "Thanks for using this periodic table, see you next time!\n\n";
+            running = false;
+            return 0;
+            }
+            else if ((option == 'n') || (option == 'N')) { 
+                continue;
+            }
         }
         else {
-            cout << "Please enter a valid input per menu instructions. (1, 2, 3, or 4)\n";
+            cout << endl << "Please enter a valid input per menu instructions. (1, 2, 3, or 4)\n" << endl;
+            cin.clear();
+            cin.ignore();
             continue;
         }
         
-        cout << "Would you like to search another element? (Y/y or N/n to QUIT)\n";
+        cout << endl << "Would you like to search another element? (Y/y or N/n to QUIT): ";
         cin >> repeat;
 
         if (tolower(repeat) == 'y') {
@@ -209,7 +245,7 @@ int main() {
         }
 
     }
-    cout << "Thanks for using this periodic table, see you next time!\n\n";
+    cout << endl << "Thanks for using this periodic table, see you next time!\n\n";
 
 
     //Element user_element = findElementFromName("Helium");
