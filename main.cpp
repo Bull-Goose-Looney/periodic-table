@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <regex>
 #include <vector>
 
 #include "Element.cpp"
@@ -10,9 +11,10 @@ using namespace std;
 vector<Element> all_the_elements;
 
 Element* findElementFromName(string name) {
-    cout << "Made it here";
-    for(Element element : all_the_elements) {
+    cout << "Size of elements vector" << all_the_elements.size() << endl;
+    for(Element& element : all_the_elements) {
         if (element.getName() == name) {
+            cout << "Returning element" << endl;
             return &element;
         }
     }
@@ -45,12 +47,11 @@ void menu() {
     cout << "Enter your selection as 1, 2, 3, or 4 to QUIT\n";
 }
 
-void namePrompt() {
-      
+
+string removeQuotes(const std::string& str) {
+    static regex quoteRegex("^\"|\"$"); // Matches leading or trailing quotes
+    return regex_replace(str, quoteRegex, "");
 }
-
-
-
 // This function will, when given a filename, open the file, read it, and populate a list of Elements.
 // Input: filename
 // Output: void
@@ -70,54 +71,73 @@ void readCSV(const string& filename) {
     if (getline(file, line)) {
         istringstream headerStream(line);
         string header;
+        int i = 1;
         while (getline(headerStream, header, ',')) {
-            headers.push_back(header);
+            headers.push_back(removeQuotes(header));
         }
     }
 
+    // Loop over each line in the file
     while (getline(file, line)) {
-            Element element;
-            vector<string> row;
-            stringstream lineStream(line);
+        Element element;
+        vector<string> row;
+        stringstream lineStream(line);
 
-            while (getline(lineStream, cell, ',')) {
-                row.push_back(cell);
-                //Element myElement(my_symbol, my_name, my_color, my_type, my_phase, my_atomic_number, my_molar_mass, my_group, my_period);
+        // Loop over each value in the row
+        while (getline(lineStream, cell, ',')) {
+            // Put values of single row into array
+            row.push_back(removeQuotes(cell));
+        }
+
+        for (unsigned int i = 0; i < row.size(); ++i)
+        {
+            if(row[i] == "") {
+                continue;
             }
 
-            for(unsigned int i = 0; i < row.size(); ++i ) {
-                if (headers[i] == "Name") {
-                    element.setName(row[i]);
+            if (headers[i] == "Name")
+            {
+                cout << "Setting element name = " << row[i] << endl;
+                element.setName(row[i]);
+            }
+            else if (headers[i] == "Symbol")
+            {
+                element.setSymbol(row[i]);
+            }
+            else if (headers[i] == "Atomic_Number")
+            {
+                element.setAtomicNum(stoi(row[i]));
+            }
+            else if (headers[i] == "Group")
+            {
+                element.setGroup(stoi(row[i]));
+            }
+            else if (headers[i] == "Atomic_Weight")
+            {
+                element.setMass(stoi(row[i]));
+            }
+            else if (headers[i] == "Phase")
+            {
+                if (row[i] == "Solid")
+                {
+                    element.setPhase(Phase ::Solid);
                 }
-                else if (headers[i] == "Symbol") {
-                    element.setSymbol(row[i]);
+                else if (row[i] == "Liquid")
+                {
+                    element.setPhase(Phase ::Liquid);
                 }
-                else if (headers[i] == "Atomic_Number") {
-                    element.setAtomicNum(stoi(row[i]));
+                else if (row[i] == "Gas")
+                {
+                    element.setPhase(Phase ::Gas);
                 }
-                else if (headers[i] == "Group") {
-                    element.setGroup(stoi(row[i]));
+                else
+                {
+                    element.setPhase(Phase ::Unknown);
                 }
-                else if (headers[i] == "Atomic_Weight") {
-                    element.setMass(stoi(row[i]));
-                }
-                else if (headers[i] == "Phase") {
-                    if(row[i] == "Solid") {
-                        element.setPhase(Phase :: Solid);
-                    }
-                    else if(row[i] == "Liquid") {
-                        element.setPhase(Phase :: Liquid);
-                    }
-                    else if(row[i] == "Gas") {
-                        element.setPhase(Phase :: Gas);
-                    }
-                    else {
-                        element.setPhase(Phase :: Unknown);
-                    }
-                }
-                elements.push_back(element);
             }
         }
+        all_the_elements.push_back(element);
+    }
 }
 
 
@@ -126,6 +146,7 @@ void readCSV(const string& filename) {
 // Main will start the program, we will pass the proper filename 'elementdatavalues.csv'
 int main() {
     string filename = "elements.csv";
+
     readCSV(filename);
 
     cout << "Welcome to the C++ Periodic Table 5000, brought to you by C programing and Dmitri Mendeleev: a GMoney production\n\n";
@@ -148,14 +169,14 @@ int main() {
             getline (cin, name);
             cout << "You entered " << name << ", Now using quantum hydrolysis to compute element data\n\n";
 
-            Element* element = findElementFromName(name);
+            Element *element = findElementFromName(name);
             if (element == nullptr) {
                 cout << "Element not found. Please check for spelling and/or scientific validity and try again.";
+            } else {
+                cout << "The symbol for " << element->getName() << " is: " << element->getSymbol()<< endl; 
+                cout << "The atomic mass of " << element->getName() << " is: " << element->getMass() << " g/mol\n";
+                // cout << element->getName() << " is in group " << element->getGroup()  << " which means it is a(n) " << element->getType() << endl;
             }
-
-            cout << "The symbol for " << element->getName() << " is: " << element->getSymbol()<< endl; 
-            cout << "The atomic mass of " << element->getName() << " is: " << element->getMass() << " g/mol\n";
-            cout << element->getName() << " is in group " << element->getGroup()  << " which means it is a(n) " << element->getType() << endl;
         }
         else if (selection == 2) {
             string symbol;
